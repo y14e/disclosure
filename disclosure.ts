@@ -1,7 +1,7 @@
 /**
  * disclosure.ts
  *
- * @version 1.2.3
+ * @version 1.2.4
  * @author Yusuke Kamiyamane
  * @license MIT
  * @copyright Copyright (c) Yusuke Kamiyamane
@@ -42,15 +42,15 @@ type Binding = {
 export default class Disclosure {
   static defaults: DisclosureOptions = {};
 
-  #rootElement: HTMLElement;
+  #rootElement!: HTMLElement;
   #defaults = {
     animation: {
       duration: 300,
       easing: 'ease',
     },
   };
-  #settings: DeepRequired<DisclosureOptions>;
-  #detailsElements: HTMLDetailsElement[];
+  #settings!: DeepRequired<DisclosureOptions>;
+  #detailsElements!: HTMLDetailsElement[];
   #summaryElements!: HTMLElement[];
   #contentElements!: HTMLElement[];
   #bindings = new WeakMap<HTMLElement, Binding>();
@@ -62,6 +62,11 @@ export default class Disclosure {
   constructor(root: HTMLElement, options: DisclosureOptions = {}) {
     if (!(root instanceof HTMLElement)) {
       throw new TypeError('Invalid root element');
+    }
+
+    if (root.hasAttribute('data-disclosure-initialized')) {
+      console.warn('Already initialized');
+      return;
     }
 
     this.#rootElement = root;
