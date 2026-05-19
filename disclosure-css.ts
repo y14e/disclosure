@@ -1,7 +1,7 @@
 /**
  * disclosure-css.ts
  *
- * @version 1.2.1
+ * @version 1.2.2
  * @author Yusuke Kamiyamane
  * @license MIT
  * @copyright Copyright (c) Yusuke Kamiyamane
@@ -23,8 +23,8 @@ type Binding = {
 // -----------------------------------------------------------------------------
 
 export default class Disclosure {
-  #rootElement: HTMLElement;
-  #detailsElements: HTMLDetailsElement[];
+  #rootElement!: HTMLElement;
+  #detailsElements!: HTMLDetailsElement[];
   #summaryElements!: HTMLElement[];
   #contentElements!: HTMLElement[];
   #bindings = new WeakMap<HTMLElement, Binding>();
@@ -34,6 +34,11 @@ export default class Disclosure {
   constructor(root: HTMLElement) {
     if (!(root instanceof HTMLElement)) {
       throw new TypeError('Invalid root element');
+    }
+
+    if (root.hasAttribute('data-disclosure-initialized')) {
+      console.warn('Already initialized');
+      return;
     }
 
     this.#rootElement = root;
