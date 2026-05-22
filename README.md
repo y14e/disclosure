@@ -1,6 +1,24 @@
-# disclosure.ts
+# Disclosure
 
 WAI-ARIA compliant [disclosure](https://www.w3.org/WAI/ARIA/apg/patterns/disclosure/) pattern implementation in TypeScript. Using the `<details>` and `<summary>` element.
+
+## Install
+
+```bash
+npm i @y14e/disclosure
+```
+
+```ts
+// npm
+import Disclosure from '@y14e/disclosure';
+
+// CDNs
+import Disclosure from 'https://esm.sh/@y14e/disclosure'
+// or
+import Disclosure from 'https://cdn.jsdelivr.net/npm/@y14e/disclosure/+esm';
+// or
+import Disclosure from 'https://unpkg.com/@y14e/disclosure/dist/index.js';
+```
 
 ## Usage
 
