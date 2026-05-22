@@ -91,4 +91,4 @@ disclosure.destroy(force);
 
 ## Demo
 
-- https://y14e.github.io/disclosure-ts/
+- https://y14e.github.io/disclosure/
