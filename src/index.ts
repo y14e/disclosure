@@ -1,5 +1,7 @@
 /**
  * disclosure.ts
+ * WAI-ARIA compliant disclosure pattern implementation in TypeScript.
+ * Using the <details> and <summary> element.
  *
  * @version 1.2.4
  * @author Yusuke Kamiyamane
