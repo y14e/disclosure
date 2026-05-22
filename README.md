@@ -47,7 +47,7 @@ interface DisclosureOptions {
 Override the global default settings applied to all disclosure instances.
 
 ```ts
-import Disclosure from './disclosure';
+import Disclosure from '@y14e/disclosure';
 
 Disclosure.defaults = {
   animation: {
