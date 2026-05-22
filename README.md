@@ -23,8 +23,6 @@ import Disclosure from 'https://unpkg.com/@y14e/disclosure/dist/index.js';
 ## Usage
 
 ```ts
-import Disclosure from './disclosure';
-
 new Disclosure(root, options);
 // => Disclosure
 //
