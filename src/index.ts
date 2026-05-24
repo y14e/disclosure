@@ -3,12 +3,18 @@
  * WAI-ARIA compliant disclosure pattern implementation in TypeScript.
  * Using the <details> and <summary> element.
  *
- * @version 1.2.5
+ * @version 1.2.6
  * @author Yusuke Kamiyamane
  * @license MIT
  * @copyright Copyright (c) Yusuke Kamiyamane
  * @see {@link https://github.com/y14e/disclosure}
  */
+
+// -----------------------------------------------------------------------------
+// import
+// -----------------------------------------------------------------------------
+
+import type { DeepRequired } from 'utility-types';
 
 // -----------------------------------------------------------------------------
 // Types
@@ -20,14 +26,6 @@ export interface DisclosureOptions {
     readonly easing?: string;
   };
 }
-
-type DeepRequired<T> = T extends (...args: unknown[]) => unknown
-  ? T
-  : T extends readonly unknown[]
-    ? T
-    : T extends object
-      ? { [K in keyof T]-?: DeepRequired<NonNullable<T[K]>> }
-      : NonNullable<T>;
 
 type Binding = {
   details: HTMLDetailsElement;
@@ -127,7 +125,7 @@ export default class Disclosure {
     this.#initialize();
   }
 
-  open(details: HTMLDetailsElement) {
+  open(details: HTMLDetailsElement): void {
     if (this.#isDestroyed) {
       return;
     }
@@ -143,7 +141,7 @@ export default class Disclosure {
     this.#toggle(details, true);
   }
 
-  close(details: HTMLDetailsElement) {
+  close(details: HTMLDetailsElement): void {
     if (this.#isDestroyed) {
       return;
     }
@@ -159,7 +157,7 @@ export default class Disclosure {
     this.#toggle(details, false);
   }
 
-  async destroy(force = false) {
+  async destroy(force = false): Promise<void> {
     if (this.#isDestroyed) {
       return;
     }
@@ -194,7 +192,7 @@ export default class Disclosure {
     this.#rootElement.removeAttribute('data-disclosure-initialized');
   }
 
-  #initialize() {
+  #initialize(): void {
     this.#eventController = new AbortController();
     const { signal } = this.#eventController;
 
@@ -202,14 +200,14 @@ export default class Disclosure {
       details.name &&
         details.setAttribute('data-disclosure-name', details.name);
 
-      function sync() {
+      function onMutate(): void {
         details.toggleAttribute('data-disclosure-open', details.open);
       }
 
-      const observer = new MutationObserver(sync);
+      const observer = new MutationObserver(onMutate);
       observer.observe(details, { attributeFilter: ['open'] });
       this.#observers.push(observer);
-      sync();
+      onMutate();
       const summary = this.#summaryElements[i];
 
       if (!summary) {
@@ -229,9 +227,8 @@ export default class Disclosure {
     this.#rootElement.setAttribute('data-disclosure-initialized', '');
   }
 
-  #onSummaryClick = (event: MouseEvent) => {
+  #onSummaryClick = (event: MouseEvent): void => {
     event.preventDefault();
-    event.stopPropagation();
     const summary = event.currentTarget;
 
     if (!(summary instanceof HTMLElement)) {
@@ -248,15 +245,13 @@ export default class Disclosure {
     this.#toggle(details, !details.hasAttribute('data-disclosure-open'));
   };
 
-  #onSummaryKeyDown = (event: KeyboardEvent) => {
+  #onSummaryKeyDown = (event: KeyboardEvent): void => {
     const { key } = event;
 
     if (!['End', 'Home', 'ArrowUp', 'ArrowDown'].includes(key)) {
       return;
     }
 
-    event.preventDefault();
-    event.stopPropagation();
     const focusables = this.#summaryElements.filter(isFocusable);
     const active = getActiveElement();
 
@@ -264,6 +259,7 @@ export default class Disclosure {
       return;
     }
 
+    event.preventDefault();
     const currentIndex = focusables.indexOf(active);
     let newIndex = currentIndex;
 
@@ -285,7 +281,7 @@ export default class Disclosure {
     focusables.at(newIndex)?.focus();
   };
 
-  #toggle(details: HTMLDetailsElement, isOpen: boolean) {
+  #toggle(details: HTMLDetailsElement, isOpen: boolean): void {
     if (details.hasAttribute('data-disclosure-open') === isOpen) {
       return;
     }
@@ -331,7 +327,7 @@ export default class Disclosure {
     );
     binding.animation = animation;
 
-    function cleanup() {
+    function cleanup(): void {
       if (binding?.animation === animation) {
         binding.animation = null;
       }
@@ -354,13 +350,13 @@ export default class Disclosure {
   #mergeOptions(
     target: DeepRequired<DisclosureOptions>,
     source: DisclosureOptions,
-  ) {
+  ): DeepRequired<DisclosureOptions> {
     return {
       animation: { ...target.animation, ...(source.animation ?? {}) },
     };
   }
 
-  #onAnimationFinish(content: HTMLElement) {
+  #onAnimationFinish(content: HTMLElement): void {
     const binding = this.#bindings.get(content);
 
     if (!binding) {
@@ -385,7 +381,7 @@ export default class Disclosure {
     style.removeProperty('overflow');
   }
 
-  async #waitAnimationsFinish() {
+  async #waitAnimationsFinish(): Promise<void> {
     const promises: Promise<void>[] = [];
 
     this.#contentElements.forEach((content) => {
@@ -405,11 +401,11 @@ function createBinding(
   details: HTMLDetailsElement,
   summary: HTMLElement,
   content: HTMLElement,
-) {
+): Binding {
   return { details, summary, content, timer: undefined, animation: null };
 }
 
-function getActiveElement() {
+function getActiveElement(): Element | null {
   let current = document.activeElement;
 
   while (current?.shadowRoot?.activeElement) {
@@ -419,11 +415,11 @@ function getActiveElement() {
   return current;
 }
 
-function isFocusable(element: HTMLElement) {
+function isFocusable(element: HTMLElement): boolean {
   return element.tabIndex >= 0;
 }
 
-function waitAnimationFinish(animation: Animation) {
+function waitAnimationFinish(animation: Animation): Promise<void> {
   const { playState } = animation;
 
   if (playState === 'idle' || playState === 'finished') {
