@@ -3,7 +3,7 @@
  * WAI-ARIA compliant disclosure pattern implementation in TypeScript.
  * Using the <details> and <summary> element.
  *
- * @version 1.2.6
+ * @version 1.2.7
  * @author Yusuke Kamiyamane
  * @license MIT
  * @copyright Copyright (c) Yusuke Kamiyamane
@@ -246,7 +246,11 @@ export default class Disclosure {
   };
 
   #onSummaryKeyDown = (event: KeyboardEvent): void => {
-    const { key } = event;
+    const { key, altKey, ctrlKey, metaKey, shiftKey } = event;
+
+    if (altKey || ctrlKey || metaKey || shiftKey) {
+      return;
+    }
 
     if (!['End', 'Home', 'ArrowUp', 'ArrowDown'].includes(key)) {
       return;
