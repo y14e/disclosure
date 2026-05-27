@@ -1,6 +1,6 @@
 {
   "name": "@y14e/disclosure",
-  "version": "1.2.7",
+  "version": "1.2.8",
   "description": "WAI-ARIA compliant disclosure pattern implementation in TypeScript",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -43,6 +43,7 @@
   },
   "homepage": "https://github.com/y14e/disclosure#readme",
   "devDependencies": {
+    "@y14e/attributes-utils": "^1.0.5",
     "bun-types": "latest",
     "tsup": "^8.0.0",
     "typescript": "^5.6.0",
