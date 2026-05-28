@@ -3,7 +3,7 @@
  * WAI-ARIA compliant disclosure pattern implementation in TypeScript.
  * Using the <details> and <summary> element.
  *
- * @version 1.3.1
+ * @version 1.3.2
  * @author Yusuke Kamiyamane
  * @license MIT
  * @copyright Copyright (c) Yusuke Kamiyamane
@@ -125,12 +125,6 @@ export default class Disclosure {
       this.#bindings.set(content, binding);
     });
 
-    this.#cleanupRovingTabIndex = createRovingTabIndex(this.#rootElement, {
-      direction: 'vertical',
-      navigationOnly: true,
-      selector: `summary${NOT_NESTED}`,
-      wrap: true,
-    });
     this.#initialize();
   }
 
@@ -172,8 +166,6 @@ export default class Disclosure {
     }
 
     this.#isDestroyed = true;
-    this.#cleanupRovingTabIndex?.();
-    this.#cleanupRovingTabIndex = null;
     this.#eventController?.abort();
     this.#eventController = null;
 
@@ -182,6 +174,8 @@ export default class Disclosure {
     });
 
     this.#observers.length = 0;
+    this.#cleanupRovingTabIndex?.();
+    this.#cleanupRovingTabIndex = null;
     !force && (await this.#waitAnimationsFinish());
 
     this.#contentElements.forEach((content) => {
@@ -234,6 +228,13 @@ export default class Disclosure {
       }
 
       summary.addEventListener('click', this.#onSummaryClick, { signal });
+    });
+
+    this.#cleanupRovingTabIndex = createRovingTabIndex(this.#rootElement, {
+      direction: 'vertical',
+      navigationOnly: true,
+      selector: `summary:not(:scope summary + * *)`,
+      wrap: true,
     });
 
     this.#rootElement.setAttribute('data-disclosure-initialized', '');
