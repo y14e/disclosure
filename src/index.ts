@@ -3,7 +3,7 @@
  * WAI-ARIA compliant disclosure pattern implementation in TypeScript.
  * Using the <details> and <summary> element.
  *
- * @version 1.2.8
+ * @version 1.3.0
  * @author Yusuke Kamiyamane
  * @license MIT
  * @copyright Copyright (c) Yusuke Kamiyamane
@@ -15,6 +15,7 @@
 // -----------------------------------------------------------------------------
 
 import { restoreAttributes, saveAttributes } from '@y14e/attributes-utils';
+import { createRovingTabIndex } from '@y14e/roving-tabindex';
 import type { DeepRequired } from 'utility-types';
 
 // -----------------------------------------------------------------------------
@@ -58,6 +59,7 @@ export default class Disclosure {
   #eventController: AbortController | null = null;
   #animationController: AbortController | null = null;
   #observers: MutationObserver[] = [];
+  #cleanupRovingTabIndex: (() => void) | null = null;
   #isDestroyed = false;
 
   constructor(root: HTMLElement, options: DisclosureOptions = {}) {
@@ -123,6 +125,12 @@ export default class Disclosure {
       this.#bindings.set(content, binding);
     });
 
+    this.#cleanupRovingTabIndex = createRovingTabIndex(this.#rootElement, {
+      direction: 'vertical',
+      navigationOnly: true,
+      selector: `summary${NOT_NESTED}`,
+      wrap: true,
+    });
     this.#initialize();
   }
 
@@ -181,6 +189,8 @@ export default class Disclosure {
 
     this.#animationController?.abort();
     this.#animationController = null;
+    this.#cleanupRovingTabIndex?.();
+    this.#cleanupRovingTabIndex = null;
 
     this.#detailsElements.forEach((details) => {
       details.removeAttribute('data-disclosure-name');
@@ -224,7 +234,6 @@ export default class Disclosure {
       }
 
       summary.addEventListener('click', this.#onSummaryClick, { signal });
-      summary.addEventListener('keydown', this.#onSummaryKeyDown, { signal });
     });
 
     this.#rootElement.setAttribute('data-disclosure-initialized', '');
@@ -246,46 +255,6 @@ export default class Disclosure {
 
     const { details } = binding;
     this.#toggle(details, !details.hasAttribute('data-disclosure-open'));
-  };
-
-  #onSummaryKeyDown = (event: KeyboardEvent): void => {
-    const { key, altKey, ctrlKey, metaKey, shiftKey } = event;
-
-    if (altKey || ctrlKey || metaKey || shiftKey) {
-      return;
-    }
-
-    if (!['End', 'Home', 'ArrowUp', 'ArrowDown'].includes(key)) {
-      return;
-    }
-
-    const focusables = this.#summaryElements.filter(isFocusable);
-    const active = getActiveElement();
-
-    if (!(active instanceof HTMLElement)) {
-      return;
-    }
-
-    event.preventDefault();
-    const currentIndex = focusables.indexOf(active);
-    let newIndex = currentIndex;
-
-    switch (key) {
-      case 'End':
-        newIndex = -1;
-        break;
-      case 'Home':
-        newIndex = 0;
-        break;
-      case 'ArrowUp':
-        newIndex = currentIndex - 1;
-        break;
-      case 'ArrowDown':
-        newIndex = (currentIndex + 1) % focusables.length;
-        break;
-    }
-
-    focusables.at(newIndex)?.focus();
   };
 
   #toggle(details: HTMLDetailsElement, isOpen: boolean): void {
