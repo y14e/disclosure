@@ -3,7 +3,7 @@
  * WAI-ARIA compliant disclosure pattern implementation in TypeScript.
  * Using the <details> and <summary> element.
  *
- * @version 1.3.2
+ * @version 1.3.3
  * @author Yusuke Kamiyamane
  * @license MIT
  * @copyright Copyright (c) Yusuke Kamiyamane
@@ -233,7 +233,7 @@ export default class Disclosure {
     this.#cleanupRovingTabIndex = createRovingTabIndex(this.#rootElement, {
       direction: 'vertical',
       navigationOnly: true,
-      selector: `summary:not(:scope summary + * *)`,
+      selector: 'summary:not(:scope summary + * *)',
       wrap: true,
     });
 
