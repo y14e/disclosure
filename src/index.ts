@@ -3,7 +3,7 @@
  * WAI-ARIA compliant disclosure pattern implementation in TypeScript.
  * Using the <details> and <summary> element.
  *
- * @version 1.3.0
+ * @version 1.3.1
  * @author Yusuke Kamiyamane
  * @license MIT
  * @copyright Copyright (c) Yusuke Kamiyamane
@@ -172,6 +172,8 @@ export default class Disclosure {
     }
 
     this.#isDestroyed = true;
+    this.#cleanupRovingTabIndex?.();
+    this.#cleanupRovingTabIndex = null;
     this.#eventController?.abort();
     this.#eventController = null;
 
@@ -189,8 +191,6 @@ export default class Disclosure {
 
     this.#animationController?.abort();
     this.#animationController = null;
-    this.#cleanupRovingTabIndex?.();
-    this.#cleanupRovingTabIndex = null;
 
     this.#detailsElements.forEach((details) => {
       details.removeAttribute('data-disclosure-name');
@@ -379,16 +379,6 @@ function createBinding(
   content: HTMLElement,
 ): Binding {
   return { details, summary, content, timer: undefined, animation: null };
-}
-
-function getActiveElement(): Element | null {
-  let current = document.activeElement;
-
-  while (current?.shadowRoot?.activeElement) {
-    current = current.shadowRoot.activeElement;
-  }
-
-  return current;
 }
 
 function isFocusable(element: HTMLElement): boolean {
