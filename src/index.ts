@@ -3,7 +3,7 @@
  * WAI-ARIA compliant disclosure pattern implementation in TypeScript.
  * Using the <details> and <summary> element.
  *
- * @version 1.3.5
+ * @version 1.3.6
  * @author Yusuke Kamiyamane
  * @license MIT
  * @copyright Copyright (c) Yusuke Kamiyamane
@@ -199,6 +199,11 @@ export default class Disclosure {
   }
 
   #initialize(): void {
+    saveAttributes(this.#summaryElements, [
+      'aria-disabled',
+      'style',
+      'tabindex',
+    ]);
     this.#eventController = new AbortController();
     const { signal } = this.#eventController;
 
@@ -221,7 +226,6 @@ export default class Disclosure {
       }
 
       if (!isFocusable(summary)) {
-        saveAttributes([summary], ['aria-disabled', 'style', 'tabindex']);
         summary.setAttribute('aria-disabled', 'true');
         summary.setAttribute('tabindex', '-1');
         summary.style.setProperty('pointer-events', 'none');
