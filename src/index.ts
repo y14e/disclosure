@@ -3,7 +3,7 @@
  * WAI-ARIA compliant disclosure pattern implementation in TypeScript.
  * Using the <details> and <summary> element.
  *
- * @version 1.3.6
+ * @version 1.3.7
  * @author Yusuke Kamiyamane
  * @license MIT
  * @copyright Copyright (c) Yusuke Kamiyamane
@@ -187,8 +187,9 @@ export default class Disclosure {
     this.#animationController = null;
 
     this.#detailsElements.forEach((details) => {
-      details.removeAttribute('data-disclosure-name');
-      details.removeAttribute('data-disclosure-open');
+      ['name', 'open'].forEach((name) => {
+        details.removeAttribute(`data-disclosure-${name}`);
+      });
     });
 
     this.#detailsElements.length = 0;
@@ -357,9 +358,9 @@ export default class Disclosure {
       details.open = false;
     }
 
-    const { style } = content;
-    style.removeProperty('block-size');
-    style.removeProperty('overflow');
+    ['block-size', 'overflow'].forEach((name) => {
+      content.style.removeProperty(name);
+    });
   }
 
   async #waitAnimationsFinish(): Promise<void> {
