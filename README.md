@@ -10,14 +10,14 @@ npm i @y14e/disclosure
 
 ```ts
 // npm
-import Disclosure from '@y14e/disclosure@1.3.7';
+import Disclosure from '@y14e/disclosure@1.3.8';
 
 // CDNs
-import Disclosure from 'https://esm.sh/@y14e/disclosure@1.3.7';
+import Disclosure from 'https://esm.sh/@y14e/disclosure@1.3.8';
 // or
-import Disclosure from 'https://cdn.jsdelivr.net/npm/@y14e/disclosure@1.3.7/+esm';
+import Disclosure from 'https://cdn.jsdelivr.net/npm/@y14e/disclosure@1.3.8/+esm';
 // or
-import Disclosure from 'https://esm.unpkg.com/@y14e/disclosure@1.3.7';
+import Disclosure from 'https://esm.unpkg.com/@y14e/disclosure@1.3.8';
 ```
 
 ## Usage
@@ -60,15 +60,6 @@ new Disclosure(root);
 
 ## 📦 APIs
 
-### `open`
-
-```ts
-disclosure.open(details);
-// => void
-//
-// details: HTMLDetailsElement
-```
-
 ### `close`
 
 ```ts
@@ -87,6 +78,15 @@ disclosure.destroy(force);
 // => Promise<void>
 //
 // force (optional): If true, skips waiting for animations to finish.
+```
+
+### `open`
+
+```ts
+disclosure.open(details);
+// => void
+//
+// details: HTMLDetailsElement
 ```
 
 ## Demo

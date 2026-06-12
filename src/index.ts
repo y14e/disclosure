@@ -3,7 +3,7 @@
  * WAI-ARIA compliant disclosure pattern implementation in TypeScript.
  * Using the <details> and <summary> element.
  *
- * @version 1.3.7
+ * @version 1.3.8
  * @author Yusuke Kamiyamane
  * @license MIT
  * @copyright Copyright (c) Yusuke Kamiyamane
@@ -128,22 +128,6 @@ export default class Disclosure {
     this.#initialize();
   }
 
-  open(details: HTMLDetailsElement): void {
-    if (this.#isDestroyed) {
-      return;
-    }
-
-    if (
-      !(details instanceof HTMLDetailsElement) ||
-      !this.#bindings.has(details)
-    ) {
-      console.warn('Invalid <details> element');
-      return;
-    }
-
-    this.#toggle(details, true);
-  }
-
   close(details: HTMLDetailsElement): void {
     if (this.#isDestroyed) {
       return;
@@ -197,6 +181,22 @@ export default class Disclosure {
     this.#summaryElements.length = 0;
     this.#contentElements.length = 0;
     this.#rootElement.removeAttribute('data-disclosure-initialized');
+  }
+
+  open(details: HTMLDetailsElement): void {
+    if (this.#isDestroyed) {
+      return;
+    }
+
+    if (
+      !(details instanceof HTMLDetailsElement) ||
+      !this.#bindings.has(details)
+    ) {
+      console.warn('Invalid <details> element');
+      return;
+    }
+
+    this.#toggle(details, true);
   }
 
   #initialize(): void {
