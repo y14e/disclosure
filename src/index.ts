@@ -3,7 +3,7 @@
  * WAI-ARIA compliant disclosure pattern implementation in TypeScript.
  * Using the <details> and <summary> element.
  *
- * @version 1.3.8
+ * @version 1.3.9
  * @author Yusuke Kamiyamane
  * @license MIT
  * @copyright Copyright (c) Yusuke Kamiyamane
@@ -241,7 +241,6 @@ export default class Disclosure {
       selector: 'summary:not(:scope summary + * *)',
       wrap: true,
     });
-
     this.#rootElement.setAttribute('data-disclosure-initialized', '');
   }
 
@@ -322,6 +321,10 @@ export default class Disclosure {
     animation.addEventListener(
       'finish',
       () => {
+        if (binding?.animation !== animation) {
+          return;
+        }
+
         this.#onAnimationFinish(content);
         cleanup();
       },
