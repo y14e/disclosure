@@ -3,7 +3,7 @@
  * WAI-ARIA compliant disclosure pattern implementation in TypeScript.
  * Using the <details> and <summary> element.
  *
- * @version 1.3.9
+ * @version 1.3.10
  * @author Yusuke Kamiyamane
  * @license MIT
  * @copyright Copyright (c) Yusuke Kamiyamane
@@ -395,9 +395,7 @@ function isFocusable(element: HTMLElement): boolean {
 }
 
 function waitAnimationFinish(animation: Animation): Promise<void> {
-  const { playState } = animation;
-
-  if (playState === 'idle' || playState === 'finished') {
+  if (['idle', 'finished'].includes(animation.playState)) {
     return Promise.resolve();
   }
 
