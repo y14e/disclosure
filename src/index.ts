@@ -212,15 +212,17 @@ export default class Disclosure {
       onMutate();
       const summary = this.#summaryElements[i];
 
-      if (summary) {
-        if (!isFocusable(summary)) {
-          summary.setAttribute('aria-disabled', 'true');
-          summary.setAttribute('tabindex', '-1');
-          summary.style.setProperty('pointer-events', 'none');
-        }
-
-        summary.addEventListener('click', this.#onSummaryClick, { signal });
+      if (!summary) {
+        return;
       }
+
+      if (!isFocusable(summary)) {
+        summary.setAttribute('aria-disabled', 'true');
+        summary.setAttribute('tabindex', '-1');
+        summary.style.setProperty('pointer-events', 'none');
+      }
+
+      summary.addEventListener('click', this.#onSummaryClick, { signal });
     });
 
     this.#cleanupRovingTabIndex = createRovingTabIndex(this.#rootElement, {
@@ -381,9 +383,9 @@ function isFocusable(element: HTMLElement): boolean {
 function waitAnimationFinish(animation: Animation): Promise<void> {
   if (['idle', 'finished'].includes(animation.playState)) {
     return Promise.resolve();
+  } else {
+    return new Promise<void>((resolve) =>
+      animation.addEventListener('finish', () => resolve(), { once: true }),
+    );
   }
-
-  return new Promise<void>((resolve) =>
-    animation.addEventListener('finish', () => resolve(), { once: true }),
-  );
 }
