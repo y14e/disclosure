@@ -3,7 +3,7 @@
  * WAI-ARIA compliant disclosure pattern implementation in TypeScript.
  * Using the <details> and <summary> element.
  *
- * @version 1.3.11
+ * @version 1.3.12
  * @author Yusuke Kamiyamane
  * @license MIT
  * @copyright Copyright (c) Yusuke Kamiyamane
@@ -115,14 +115,12 @@ export default class Disclosure {
       const summary = this.#summaryElements[i];
       const content = this.#contentElements[i];
 
-      if (!summary || !content) {
-        return;
+      if (summary && content) {
+        const binding = createBinding(details, summary, content);
+        this.#bindings.set(details, binding);
+        this.#bindings.set(summary, binding);
+        this.#bindings.set(content, binding);
       }
-
-      const binding = createBinding(details, summary, content);
-      this.#bindings.set(details, binding);
-      this.#bindings.set(summary, binding);
-      this.#bindings.set(content, binding);
     });
 
     this.#initialize();
@@ -133,15 +131,11 @@ export default class Disclosure {
       return;
     }
 
-    if (
-      !(details instanceof HTMLDetailsElement) ||
-      !this.#bindings.has(details)
-    ) {
+    if (details instanceof HTMLDetailsElement && this.#bindings.has(details)) {
+      this.#toggle(details, false);
+    } else {
       console.warn('Invalid <details> element');
-      return;
     }
-
-    this.#toggle(details, false);
   }
 
   async destroy(force = false): Promise<void> {
@@ -188,15 +182,11 @@ export default class Disclosure {
       return;
     }
 
-    if (
-      !(details instanceof HTMLDetailsElement) ||
-      !this.#bindings.has(details)
-    ) {
+    if (details instanceof HTMLDetailsElement && this.#bindings.has(details)) {
+      this.#toggle(details, true);
+    } else {
       console.warn('Invalid <details> element');
-      return;
     }
-
-    this.#toggle(details, true);
   }
 
   #initialize(): void {
@@ -222,17 +212,15 @@ export default class Disclosure {
       onMutate();
       const summary = this.#summaryElements[i];
 
-      if (!summary) {
-        return;
-      }
+      if (summary) {
+        if (!isFocusable(summary)) {
+          summary.setAttribute('aria-disabled', 'true');
+          summary.setAttribute('tabindex', '-1');
+          summary.style.setProperty('pointer-events', 'none');
+        }
 
-      if (!isFocusable(summary)) {
-        summary.setAttribute('aria-disabled', 'true');
-        summary.setAttribute('tabindex', '-1');
-        summary.style.setProperty('pointer-events', 'none');
+        summary.addEventListener('click', this.#onSummaryClick, { signal });
       }
-
-      summary.addEventListener('click', this.#onSummaryClick, { signal });
     });
 
     this.#cleanupRovingTabIndex = createRovingTabIndex(this.#rootElement, {
@@ -254,12 +242,10 @@ export default class Disclosure {
 
     const binding = this.#bindings.get(summary);
 
-    if (!binding) {
-      return;
+    if (binding) {
+      const { details } = binding;
+      this.#toggle(details, !details.hasAttribute('data-disclosure-open'));
     }
-
-    const { details } = binding;
-    this.#toggle(details, !details.hasAttribute('data-disclosure-open'));
   };
 
   #toggle(details: HTMLDetailsElement, isOpen: boolean): void {
