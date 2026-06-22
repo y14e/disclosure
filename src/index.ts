@@ -3,7 +3,7 @@
  * WAI-ARIA compliant disclosure pattern implementation in TypeScript.
  * Using the <details> and <summary> element.
  *
- * @version 1.3.16
+ * @version 1.3.17
  * @author Yusuke Kamiyamane
  * @license MIT
  * @copyright Copyright (c) Yusuke Kamiyamane
@@ -14,11 +14,8 @@
 // import
 // -----------------------------------------------------------------------------
 
-import {
-  createRovingTabIndex,
-  restoreAttributes,
-  saveAttributes,
-} from '@y14e/roving-tabindex';
+import { restoreAttributes, saveAttributes } from '@y14e/attributes-utils';
+import { createRovingTabIndex } from '@y14e/roving-tabindex';
 import type { DeepRequired } from 'utility-types';
 
 // -----------------------------------------------------------------------------
