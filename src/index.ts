@@ -3,7 +3,7 @@
  * WAI-ARIA compliant disclosure pattern implementation in TypeScript.
  * Using the <details> and <summary> element.
  *
- * @version 1.3.17
+ * @version 1.3.18
  * @author Yusuke Kamiyamane
  * @license MIT
  * @copyright Copyright (c) Yusuke Kamiyamane
@@ -33,7 +33,6 @@ type Binding = {
   details: HTMLDetailsElement;
   summary: HTMLElement;
   content: HTMLElement;
-  timer: number | undefined;
   animation: Animation | null;
 };
 
@@ -283,7 +282,7 @@ export default class Disclosure {
       return;
     }
 
-    const { content, timer } = binding;
+    const { content } = binding;
     const startSize = details.open ? content.offsetHeight : 0;
     binding.animation?.cancel();
 
@@ -293,11 +292,7 @@ export default class Disclosure {
 
     const endSize = isOpen ? content.scrollHeight : 0;
     binding.animation?.cancel();
-    timer && cancelAnimationFrame(timer);
-    binding.timer = requestAnimationFrame(() => {
-      binding.timer = undefined;
-      details.toggleAttribute('data-disclosure-open', isOpen);
-    });
+    details.toggleAttribute('data-disclosure-open', isOpen);
     content.style.setProperty('overflow', 'clip');
     const { duration, easing } = this.#settings.animation;
     const animation = content.animate(
@@ -383,7 +378,7 @@ function createBinding(
   summary: HTMLElement,
   content: HTMLElement,
 ): Binding {
-  return { details, summary, content, timer: undefined, animation: null };
+  return { details, summary, content, animation: null };
 }
 
 function isFocusable(element: HTMLElement): boolean {
