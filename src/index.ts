@@ -3,7 +3,7 @@
  * WAI-ARIA compliant disclosure pattern implementation in TypeScript.
  * Using the <details> and <summary> element.
  *
- * @version 1.3.18
+ * @version 1.3.19
  * @author Yusuke Kamiyamane
  * @license MIT
  * @copyright Copyright (c) Yusuke Kamiyamane
@@ -115,7 +115,7 @@ export default class Disclosure {
       const content = this.#contentElements[i];
 
       if (summary && content) {
-        const binding = createBinding(details, summary, content);
+        const binding = this.#createBinding(details, summary, content);
         this.#bindings.set(details, binding);
         this.#bindings.set(summary, binding);
         this.#bindings.set(content, binding);
@@ -161,7 +161,7 @@ export default class Disclosure {
 
     this.#contentElements.forEach((content) => {
       force && this.#bindings.get(content)?.animation?.finish();
-      this.#onAnimationFinish(content);
+      this.#onContentAnimationFinish(content);
     });
 
     this.#animationController?.abort();
@@ -223,7 +223,7 @@ export default class Disclosure {
         return;
       }
 
-      if (!isFocusable(summary)) {
+      if (!this.#isFocusable(summary)) {
         summary.setAttribute('aria-disabled', 'true');
         summary.setAttribute('tabindex', '-1');
         summary.style.setProperty('pointer-events', 'none');
@@ -259,6 +259,31 @@ export default class Disclosure {
     this.#toggle(details, !details.hasAttribute('data-disclosure-open'));
   };
 
+  #onContentAnimationFinish(content: HTMLElement): void {
+    const binding = this.#bindings.get(content);
+
+    if (!binding) {
+      return;
+    }
+
+    const details = binding.details;
+
+    if (!details) {
+      return;
+    }
+
+    const name = details.getAttribute('data-disclosure-name');
+    name && details.setAttribute('name', name);
+
+    if (!details.hasAttribute('data-disclosure-open')) {
+      details.open = false;
+    }
+
+    ['block-size', 'overflow'].forEach((name) => {
+      content.style.removeProperty(name);
+    });
+  }
+
   #toggle(details: HTMLDetailsElement, isOpen: boolean): void {
     if (details.hasAttribute('data-disclosure-open') === isOpen) {
       return;
@@ -268,12 +293,12 @@ export default class Disclosure {
 
     if (name && isOpen) {
       details.removeAttribute('name');
-      const opened = this.#detailsElements.find(
+      const open = this.#detailsElements.find(
         (d) =>
           d.hasAttribute('data-disclosure-open') &&
           d.getAttribute('data-disclosure-name') === name,
       );
-      opened && this.close(opened);
+      open && this.close(open);
     }
 
     const binding = this.#bindings.get(details);
@@ -315,12 +340,24 @@ export default class Disclosure {
       'finish',
       () => {
         if (binding?.animation === animation) {
-          this.#onAnimationFinish(content);
+          this.#onContentAnimationFinish(content);
           cleanup();
         }
       },
       { once: true, signal },
     );
+  }
+
+  #createBinding(
+    details: HTMLDetailsElement,
+    summary: HTMLElement,
+    content: HTMLElement,
+  ): Binding {
+    return { details, summary, content, animation: null };
+  }
+
+  #isFocusable(element: HTMLElement): boolean {
+    return element.tabIndex >= 0;
   }
 
   #mergeOptions(
@@ -330,31 +367,6 @@ export default class Disclosure {
     return {
       animation: { ...target.animation, ...(source.animation ?? {}) },
     };
-  }
-
-  #onAnimationFinish(content: HTMLElement): void {
-    const binding = this.#bindings.get(content);
-
-    if (!binding) {
-      return;
-    }
-
-    const details = binding.details;
-
-    if (!details) {
-      return;
-    }
-
-    const name = details.getAttribute('data-disclosure-name');
-    name && details.setAttribute('name', name);
-
-    if (!details.hasAttribute('data-disclosure-open')) {
-      details.open = false;
-    }
-
-    ['block-size', 'overflow'].forEach((name) => {
-      content.style.removeProperty(name);
-    });
   }
 
   async #waitAnimationsFinish(): Promise<void> {
@@ -373,24 +385,10 @@ export default class Disclosure {
 // Utils
 // -----------------------------------------------------------------------------
 
-function createBinding(
-  details: HTMLDetailsElement,
-  summary: HTMLElement,
-  content: HTMLElement,
-): Binding {
-  return { details, summary, content, animation: null };
-}
-
-function isFocusable(element: HTMLElement): boolean {
-  return element.tabIndex >= 0;
-}
-
 function waitAnimationFinish(animation: Animation): Promise<void> {
-  if (['idle', 'finished'].includes(animation.playState)) {
-    return Promise.resolve();
-  } else {
-    return new Promise<void>((resolve) =>
-      animation.addEventListener('finish', () => resolve(), { once: true }),
-    );
-  }
+  return ['idle', 'finished'].includes(animation.playState)
+    ? Promise.resolve()
+    : new Promise((resolve) =>
+        animation.addEventListener('finish', () => resolve(), { once: true }),
+      );
 }
