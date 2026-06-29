@@ -3,7 +3,7 @@
  * WAI-ARIA compliant disclosure pattern implementation in TypeScript.
  * Using the <details> and <summary> element.
  *
- * @version 1.3.20
+ * @version 2.0.0
  * @author Yusuke Kamiyamane
  * @license MIT
  * @copyright Copyright (c) Yusuke Kamiyamane
@@ -125,7 +125,7 @@ export default class Disclosure {
     this.#initialize();
   }
 
-  close(details: HTMLDetailsElement): void {
+  collapse(details: HTMLDetailsElement): void {
     if (this.#isDestroyed) {
       return;
     }
@@ -180,7 +180,7 @@ export default class Disclosure {
     this.#rootElement.removeAttribute('data-disclosure-initialized');
   }
 
-  open(details: HTMLDetailsElement): void {
+  expand(details: HTMLDetailsElement): void {
     if (this.#isDestroyed) {
       return;
     }
@@ -284,21 +284,21 @@ export default class Disclosure {
     });
   }
 
-  #toggle(details: HTMLDetailsElement, isOpen: boolean): void {
-    if (details.hasAttribute('data-disclosure-open') === isOpen) {
+  #toggle(details: HTMLDetailsElement, isExpand: boolean): void {
+    if (details.hasAttribute('data-disclosure-open') === isExpand) {
       return;
     }
 
     const name = details.getAttribute('data-disclosure-name');
 
-    if (name && isOpen) {
+    if (name && isExpand) {
       details.removeAttribute('name');
-      const open = this.#detailsElements.find(
+      const expanded = this.#detailsElements.find(
         (d) =>
           d.hasAttribute('data-disclosure-open') &&
           d.getAttribute('data-disclosure-name') === name,
       );
-      open && this.close(open);
+      expanded && this.#toggle(expanded, false);
     }
 
     const binding = this.#bindings.get(details);
@@ -311,13 +311,13 @@ export default class Disclosure {
     const startSize = details.open ? content.offsetHeight : 0;
     binding.animation?.cancel();
 
-    if (isOpen) {
+    if (isExpand) {
       details.open = true;
     }
 
-    const endSize = isOpen ? content.scrollHeight : 0;
+    const endSize = isExpand ? content.scrollHeight : 0;
     binding.animation?.cancel();
-    details.toggleAttribute('data-disclosure-open', isOpen);
+    details.toggleAttribute('data-disclosure-open', isExpand);
     content.style.setProperty('overflow', 'clip');
     const { duration, easing } = this.#settings.animation;
     const animation = content.animate(

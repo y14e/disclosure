@@ -13,11 +13,11 @@ npm i @y14e/disclosure
 import Disclosure from '@y14e/disclosure';
 
 // CDNs
-import Disclosure from 'https://esm.sh/@y14e/disclosure@1.3.20';
+import Disclosure from 'https://esm.sh/@y14e/disclosure@2.0.0';
 // or
-import Disclosure from 'https://cdn.jsdelivr.net/npm/@y14e/disclosure@1.3.20/+esm';
+import Disclosure from 'https://cdn.jsdelivr.net/npm/@y14e/disclosure@2.0.0/+esm';
 // or
-import Disclosure from 'https://esm.unpkg.com/@y14e/disclosure@1.3.20';
+import Disclosure from 'https://esm.unpkg.com/@y14e/disclosure@2.0.0';
 ```
 
 ## Usage
@@ -60,10 +60,10 @@ new Disclosure(root);
 
 ## 📦 APIs
 
-### `close`
+### `collapse`
 
 ```ts
-disclosure.close(details);
+disclosure.collapse(details);
 // => void
 //
 // details: HTMLDetailsElement
@@ -80,10 +80,10 @@ disclosure.destroy(force);
 // force (optional): If true, skips waiting for animations to finish.
 ```
 
-### `open`
+### `expand`
 
 ```ts
-disclosure.open(details);
+disclosure.expand(details);
 // => void
 //
 // details: HTMLDetailsElement
