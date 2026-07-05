@@ -3,7 +3,7 @@
  * WAI-ARIA compliant disclosure pattern implementation in TypeScript.
  * Using the <details> and <summary> element.
  *
- * @version 2.0.0
+ * @version 2.0.1
  * @author Yusuke Kamiyamane
  * @license MIT
  * @copyright Copyright (c) Yusuke Kamiyamane
@@ -27,6 +27,7 @@ export interface DisclosureOptions {
     readonly duration?: number;
     readonly easing?: string;
   };
+  readonly collapsible?: boolean;
 }
 
 type Binding = {
@@ -49,6 +50,7 @@ export default class Disclosure {
       duration: 300,
       easing: 'ease',
     },
+    collapsible: true,
   };
   #settings!: DeepRequired<DisclosureOptions>;
   #detailsElements!: HTMLDetailsElement[];
@@ -284,8 +286,23 @@ export default class Disclosure {
     });
   }
 
-  #toggle(details: HTMLDetailsElement, isExpand: boolean): void {
+  #toggle(
+    details: HTMLDetailsElement,
+    isExpand: boolean,
+    isProgrammatic = false,
+  ): void {
     if (details.hasAttribute('data-disclosure-open') === isExpand) {
+      return;
+    }
+
+    if (
+      !isExpand &&
+      !isProgrammatic &&
+      !this.#settings.collapsible &&
+      this.#detailsElements.filter((details) =>
+        details.hasAttribute('data-disclosure-open'),
+      ).length <= 1
+    ) {
       return;
     }
 
@@ -298,7 +315,7 @@ export default class Disclosure {
           d.hasAttribute('data-disclosure-open') &&
           d.getAttribute('data-disclosure-name') === name,
       );
-      expanded && this.#toggle(expanded, false);
+      expanded && this.#toggle(expanded, false, true);
     }
 
     const binding = this.#bindings.get(details);
@@ -365,6 +382,8 @@ export default class Disclosure {
     source: DisclosureOptions,
   ): DeepRequired<DisclosureOptions> {
     return {
+      ...target,
+      ...source,
       animation: { ...target.animation, ...(source.animation ?? {}) },
     };
   }

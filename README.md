@@ -13,11 +13,11 @@ npm i @y14e/disclosure
 import Disclosure from '@y14e/disclosure';
 
 // CDNs
-import Disclosure from 'https://esm.sh/@y14e/disclosure@2.0.0';
+import Disclosure from 'https://esm.sh/@y14e/disclosure@2.0.1';
 // or
-import Disclosure from 'https://cdn.jsdelivr.net/npm/@y14e/disclosure@2.0.0/+esm';
+import Disclosure from 'https://cdn.jsdelivr.net/npm/@y14e/disclosure@2.0.1/+esm';
 // or
-import Disclosure from 'https://esm.unpkg.com/@y14e/disclosure@2.0.0';
+import Disclosure from 'https://esm.unpkg.com/@y14e/disclosure@2.0.1';
 ```
 
 ## Usage
@@ -36,9 +36,10 @@ new Disclosure(root, options);
 ```ts
 interface DisclosureOptions {
   animation?: {
-    duration?: number; // ms (default: 300)
-    easing?: string;   // <easing-function> (default: 'ease')
+    duration?: number;   // ms (default: 300)
+    easing?: string;     // <easing-function> (default: 'ease')
   };
+  collapsible?: boolean; // default: true
 }
 ```
 
