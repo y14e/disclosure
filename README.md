@@ -28,7 +28,6 @@ new Disclosure(root, options);
 //
 // root: HTMLElement
 // options (optional): DisclosureOptions
-
 ```
 
 ## 🪄 Options
