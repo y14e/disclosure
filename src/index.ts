@@ -3,7 +3,7 @@
  * WAI-ARIA compliant disclosure pattern implementation in TypeScript.
  * Using the <details> and <summary> element.
  *
- * @version 2.0.1
+ * @version 2.0.2
  * @author Yusuke Kamiyamane
  * @license MIT
  * @copyright Copyright (c) Yusuke Kamiyamane
@@ -116,12 +116,14 @@ export default class Disclosure {
       const summary = this.#summaryElements[i];
       const content = this.#contentElements[i];
 
-      if (summary && content) {
-        const binding = this.#createBinding(details, summary, content);
-        this.#bindings.set(details, binding);
-        this.#bindings.set(summary, binding);
-        this.#bindings.set(content, binding);
+      if (!summary || !content) {
+        return;
       }
+
+      const binding = this.#createBinding(details, summary, content);
+      this.#bindings.set(details, binding);
+      this.#bindings.set(summary, binding);
+      this.#bindings.set(content, binding);
     });
 
     this.#initialize();
