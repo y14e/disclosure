@@ -3,7 +3,7 @@
  * WAI-ARIA compliant disclosure pattern implementation in TypeScript.
  * Using the <details> and <summary> element.
  *
- * @version 2.0.2
+ * @version 2.0.3
  * @author Yusuke Kamiyamane
  * @license MIT
  * @copyright Copyright (c) Yusuke Kamiyamane
@@ -16,18 +16,17 @@
 
 import { restoreAttributes, saveAttributes } from '@y14e/attributes-utils';
 import { createRovingTabIndex } from '@y14e/roving-tabindex';
-import type { DeepRequired } from 'utility-types';
 
 // -----------------------------------------------------------------------------
 // Types
 // -----------------------------------------------------------------------------
 
 export interface DisclosureOptions {
-  readonly animation?: {
-    readonly duration?: number;
-    readonly easing?: string;
+  animation: {
+    duration: number;
+    easing: string;
   };
-  readonly collapsible?: boolean;
+  collapsible: boolean;
 }
 
 type Binding = {
@@ -42,7 +41,7 @@ type Binding = {
 // -----------------------------------------------------------------------------
 
 export default class Disclosure {
-  static defaults: DisclosureOptions = {};
+  static defaults: Partial<DisclosureOptions> = {};
 
   #rootElement!: HTMLElement;
   #defaults = {
@@ -52,7 +51,7 @@ export default class Disclosure {
     },
     collapsible: true,
   };
-  #settings!: DeepRequired<DisclosureOptions>;
+  #settings!: DisclosureOptions;
   #detailsElements!: HTMLDetailsElement[];
   #summaryElements!: HTMLElement[];
   #contentElements!: HTMLElement[];
@@ -63,7 +62,7 @@ export default class Disclosure {
   #cleanupRovingTabIndex: (() => void) | null = null;
   #isDestroyed = false;
 
-  constructor(root: HTMLElement, options: DisclosureOptions = {}) {
+  constructor(root: HTMLElement, options: Partial<DisclosureOptions> = {}) {
     if (!(root instanceof HTMLElement)) {
       throw new TypeError('Invalid root element');
     }
@@ -380,9 +379,9 @@ export default class Disclosure {
   }
 
   #mergeOptions(
-    target: DeepRequired<DisclosureOptions>,
-    source: DisclosureOptions,
-  ): DeepRequired<DisclosureOptions> {
+    target: DisclosureOptions,
+    source: Partial<DisclosureOptions>,
+  ): DisclosureOptions {
     return {
       ...target,
       ...source,
