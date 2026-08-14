@@ -3,7 +3,7 @@
  * WAI-ARIA compliant disclosure pattern implementation in TypeScript.
  * Using the <details> and <summary> element.
  *
- * @version 2.0.3
+ * @version 2.0.4
  * @author Yusuke Kamiyamane
  * @license MIT
  * @copyright Copyright (c) Yusuke Kamiyamane
@@ -30,10 +30,10 @@ export interface DisclosureOptions {
 }
 
 type Binding = {
+  animation: Animation | null;
+  content: HTMLElement;
   details: HTMLDetailsElement;
   summary: HTMLElement;
-  content: HTMLElement;
-  animation: Animation | null;
 };
 
 // -----------------------------------------------------------------------------
@@ -371,7 +371,7 @@ export default class Disclosure {
     summary: HTMLElement,
     content: HTMLElement,
   ): Binding {
-    return { details, summary, content, animation: null };
+    return { animation: null, content, details, summary };
   }
 
   #isFocusable(element: HTMLElement): boolean {
