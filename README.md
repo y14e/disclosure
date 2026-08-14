@@ -35,8 +35,8 @@ new Disclosure(root, options);
 ```ts
 interface DisclosureOptions {
   animation: {
-    duration: number; // ms (default: 300)
-    easing: string; // <easing-function> (default: 'ease')
+    duration: number;   // ms (default: 300)
+    easing: string;     // <easing-function> (default: 'ease')
   };
   collapsible: boolean; // default: true
 }
