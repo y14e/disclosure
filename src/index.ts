@@ -3,7 +3,7 @@
  * WAI-ARIA compliant disclosure pattern implementation in TypeScript.
  * Using the <details> and <summary> element.
  *
- * @version 2.0.4
+ * @version 2.0.5
  * @author Yusuke Kamiyamane
  * @license MIT
  * @copyright Copyright (c) Yusuke Kamiyamane
@@ -14,7 +14,7 @@
 // import
 // -----------------------------------------------------------------------------
 
-import { restoreAttributes, saveAttributes } from '@y14e/attributes-utils';
+import * as util from '@y14e/attribute-util';
 import { createRovingTabIndex } from '@y14e/roving-tabindex';
 
 // -----------------------------------------------------------------------------
@@ -177,7 +177,7 @@ export default class Disclosure {
     });
 
     this.#detailsElements.length = 0;
-    restoreAttributes(this.#summaryElements);
+    util.restoreAttributes(this.#summaryElements);
     this.#summaryElements.length = 0;
     this.#contentElements.length = 0;
     this.#rootElement.removeAttribute('data-disclosure-initialized');
@@ -200,7 +200,7 @@ export default class Disclosure {
   }
 
   #initialize(): void {
-    saveAttributes(this.#summaryElements, [
+    util.saveAttributes(this.#summaryElements, [
       'aria-disabled',
       'style',
       'tabindex',

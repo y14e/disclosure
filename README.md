@@ -13,11 +13,11 @@ npm i @y14e/disclosure
 import Disclosure from "@y14e/disclosure";
 
 // CDNs
-import Disclosure from "https://esm.sh/@y14e/disclosure@2.0.4";
+import Disclosure from "https://esm.sh/@y14e/disclosure@2.0.5";
 // or
-import Disclosure from "https://cdn.jsdelivr.net/npm/@y14e/disclosure@2.0.4/+esm";
+import Disclosure from "https://cdn.jsdelivr.net/npm/@y14e/disclosure@2.0.5/+esm";
 // or
-import Disclosure from "https://esm.unpkg.com/@y14e/disclosure@2.0.4";
+import Disclosure from "https://esm.unpkg.com/@y14e/disclosure@2.0.5";
 ```
 
 ## Usage
