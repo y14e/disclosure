@@ -3,7 +3,7 @@
  * WAI-ARIA compliant disclosure pattern implementation in TypeScript.
  * Using the <details> and <summary> element.
  *
- * @version 2.0.12
+ * @version 2.0.13
  * @author Yusuke Kamiyamane
  * @license MIT
  * @copyright Copyright (c) Yusuke Kamiyamane
@@ -389,7 +389,8 @@ export class Disclosure {
     };
     const mergedAnimation = merged.animation;
     const duration = mergedAnimation.duration;
-    const defaultAnimation = this.#defaults.animation;
+    const defaults = this.#defaults;
+    const defaultAnimation = defaults.animation;
 
     if (typeof duration !== 'number' || Number.isNaN(duration)) {
       const duration = defaultAnimation.duration;
@@ -409,7 +410,7 @@ export class Disclosure {
     }
 
     if (typeof merged.collapsible !== 'boolean') {
-      const collapsible = this.#defaults.collapsible;
+      const collapsible = defaults.collapsible;
       console.warn(`Invalid collapsible option. Fallback: ${collapsible}.`);
       merged.collapsible = collapsible;
     }
