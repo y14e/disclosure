@@ -3,7 +3,7 @@
  * WAI-ARIA compliant disclosure pattern implementation in TypeScript.
  * Using the <details> and <summary> element.
  *
- * @version 2.0.11
+ * @version 2.0.12
  * @author Yusuke Kamiyamane
  * @license MIT
  * @copyright Copyright (c) Yusuke Kamiyamane
@@ -73,8 +73,8 @@ export class Disclosure {
     }
 
     this.#rootElement = root;
-    this.#defaults = this.#mergeOptions(this.#defaults, Disclosure.defaults);
-    this.#settings = this.#mergeOptions(this.#defaults, options);
+    this.#defaults = this.#resolveOptions(this.#defaults, Disclosure.defaults);
+    this.#settings = this.#resolveOptions(this.#defaults, options);
     matchMedia('(prefers-reduced-motion: reduce)').matches &&
       Object.assign(this.#settings.animation, { duration: 0 });
     const NOT_NESTED = ':not(:scope summary + * *)';
@@ -378,7 +378,7 @@ export class Disclosure {
     return element.tabIndex >= 0;
   }
 
-  #mergeOptions(
+  #resolveOptions(
     target: DisclosureOptions,
     source: Partial<DisclosureOptions>,
   ): DisclosureOptions {
