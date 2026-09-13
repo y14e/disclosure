@@ -3,7 +3,7 @@
  * WAI-ARIA compliant disclosure pattern implementation in TypeScript.
  * Using the <details> and <summary> element.
  *
- * @version 2.0.15
+ * @version 2.0.16
  * @author Yusuke Kamiyamane
  * @license MIT
  * @copyright Copyright (c) Yusuke Kamiyamane
@@ -300,8 +300,8 @@ export class Disclosure {
       !isExpand &&
       !isProgrammatic &&
       !this.#settings.collapsible &&
-      this.#detailsElements.filter((details) =>
-        details.hasAttribute('data-disclosure-open'),
+      this.#detailsElements.filter((d) =>
+        d.hasAttribute('data-disclosure-open'),
       ).length <= 1
     ) {
       return;
