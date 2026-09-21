@@ -3,7 +3,7 @@
  * WAI-ARIA compliant disclosure pattern implementation in TypeScript.
  * Using the <details> and <summary> element.
  *
- * @version 2.1.0
+ * @version 2.1.1
  * @author Yusuke Kamiyamane
  * @license MIT
  * @copyright Copyright (c) Yusuke Kamiyamane
@@ -44,7 +44,7 @@ export class Disclosure {
   static defaults: Partial<DisclosureOptions> = {};
 
   #rootElement!: HTMLElement;
-  #defaults = {
+  #defaults: DisclosureOptions = {
     animation: {
       duration: 300,
       easing: 'ease',
@@ -435,7 +435,7 @@ export class Disclosure {
 // -----------------------------------------------------------------------------
 
 function waitAnimationFinish(animation: Animation): Promise<void> {
-  return ['idle', 'finished'].includes(animation.playState)
+  return ['finished', 'idle'].includes(animation.playState)
     ? Promise.resolve()
     : new Promise((resolve) =>
         animation.addEventListener('finish', () => resolve(), { once: true }),
