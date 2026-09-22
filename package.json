@@ -1,6 +1,6 @@
 {
   "name": "@y14e/disclosure",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "WAI-ARIA compliant disclosure pattern implementation in TypeScript",
   "keywords": [
     "a11y",
