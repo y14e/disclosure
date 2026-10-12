@@ -1,33 +1,15 @@
 import { restoreAttributes, saveAttributes } from '@y14e/attribute-utils';
 import { createRovingTabIndex } from '@y14e/roving-tabindex';
-
-export interface DisclosureOptions {
-  animation: {
-    duration: number;
-    easing: string;
-  };
-  collapsible: boolean;
-}
-
-type Binding = {
-  animation: Animation | null;
-  content: HTMLElement;
-  details: HTMLDetailsElement;
-  summary: HTMLElement;
-};
+import { defaults } from '@/defaults';
+import { resolveOptions } from '@/options';
+import type { Binding, DisclosureOptions as Options } from '@/types';
 
 export class Disclosure {
-  static defaults: Partial<DisclosureOptions> = {};
+  static defaults: Partial<Options> = {};
 
   #rootElement!: HTMLElement;
-  #defaults: DisclosureOptions = {
-    animation: {
-      duration: 300,
-      easing: 'ease',
-    },
-    collapsible: true,
-  };
-  #settings!: DisclosureOptions;
+  #defaults = defaults;
+  #settings!: Options;
   #detailsElements!: HTMLDetailsElement[];
   #summaryElements!: HTMLElement[];
   #contentElements!: HTMLElement[];
@@ -38,7 +20,7 @@ export class Disclosure {
   #cleanupRovingTabIndex: (() => void) | null = null;
   #isDestroyed = false;
 
-  constructor(root: HTMLElement, options: Partial<DisclosureOptions> = {}) {
+  constructor(root: HTMLElement, options: Partial<Options> = {}) {
     if (!(root instanceof HTMLElement)) {
       throw new TypeError('Invalid root element');
     }
@@ -49,8 +31,8 @@ export class Disclosure {
     }
 
     this.#rootElement = root;
-    this.#defaults = this.#resolveOptions(this.#defaults, Disclosure.defaults);
-    this.#settings = this.#resolveOptions(this.#defaults, options);
+    this.#defaults = resolveOptions(this.#defaults, Disclosure.defaults);
+    this.#settings = resolveOptions(this.#defaults, options);
     matchMedia('(prefers-reduced-motion: reduce)').matches &&
       Object.assign(this.#settings.animation, { duration: 0 });
     const NOT_NESTED = ':not(:scope summary + * *)';
@@ -354,46 +336,6 @@ export class Disclosure {
     return element.tabIndex >= 0;
   }
 
-  #resolveOptions(
-    target: DisclosureOptions,
-    source: Partial<DisclosureOptions>,
-  ): DisclosureOptions {
-    const merged = {
-      ...target,
-      ...source,
-      animation: { ...target.animation, ...(source.animation ?? {}) },
-    };
-    const mergedAnimation = merged.animation;
-    const duration = mergedAnimation.duration;
-    const defaults = this.#defaults;
-    const defaultAnimation = defaults.animation;
-
-    if (typeof duration !== 'number' || Number.isNaN(duration)) {
-      const duration = defaultAnimation.duration;
-      console.warn(`Invalid animation duration. Fallback: ${duration} (ms).`);
-      mergedAnimation.duration = duration;
-    }
-
-    if (duration < 0) {
-      console.warn('Invalid animation duration. Fallback: 0 (ms).');
-      mergedAnimation.duration = 0;
-    }
-
-    if (!CSS.supports('animation-timing-function', mergedAnimation.easing)) {
-      const easing = defaultAnimation.easing;
-      console.warn(`Invalid animation easing. Fallback: '${easing}'.`);
-      mergedAnimation.easing = easing;
-    }
-
-    if (typeof merged.collapsible !== 'boolean') {
-      const collapsible = defaults.collapsible;
-      console.warn(`Invalid collapsible option. Fallback: ${collapsible}.`);
-      merged.collapsible = collapsible;
-    }
-
-    return merged;
-  }
-
   async #waitAnimationsFinish(): Promise<void> {
     const promises: Promise<void>[] = [];
 
@@ -413,3 +355,5 @@ function waitAnimationFinish(animation: Animation): Promise<void> {
         animation.addEventListener('finish', () => resolve(), { once: true }),
       );
 }
+
+export type { Options as DisclosureOptions };
