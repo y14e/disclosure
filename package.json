@@ -55,6 +55,6 @@
   },
   "dependencies": {
     "@y14e/attribute-utils": "^2.0.16",
-    "@y14e/roving-tabindex": "^3.4.0"
+    "@y14e/roving-tabindex": "^3.4.1"
   }
 }
