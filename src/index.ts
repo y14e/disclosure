@@ -8,7 +8,6 @@ export class Disclosure {
   static defaults: Partial<Options> = {};
 
   #rootElement!: HTMLElement;
-  #defaults = defaults;
   #settings!: Options;
   #detailsElements!: HTMLDetailsElement[];
   #summaryElements!: HTMLElement[];
@@ -31,8 +30,10 @@ export class Disclosure {
     }
 
     this.#rootElement = root;
-    this.#defaults = resolveOptions(this.#defaults, Disclosure.defaults);
-    this.#settings = resolveOptions(this.#defaults, options);
+    this.#settings = resolveOptions(
+      resolveOptions(defaults, Disclosure.defaults),
+      options,
+    );
     matchMedia('(prefers-reduced-motion: reduce)').matches &&
       Object.assign(this.#settings.animation, { duration: 0 });
     const NOT_NESTED = ':not(:scope summary + * *)';
