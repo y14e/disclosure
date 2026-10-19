@@ -79,9 +79,10 @@ export class Disclosure {
       }
 
       const binding = this.#createBinding(details, summary, content);
-      this.#bindings.set(details, binding);
-      this.#bindings.set(summary, binding);
-      this.#bindings.set(content, binding);
+
+      [details, summary, content].forEach((element) => {
+        this.#bindings.set(element, binding);
+      });
     });
 
     this.#initialize();
