@@ -34,8 +34,11 @@ export class Disclosure {
       resolveOptions(defaults, Disclosure.defaults),
       options,
     );
-    matchMedia('(prefers-reduced-motion: reduce)').matches &&
-      Object.assign(this.#settings.animation, { duration: 0 });
+
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      this.#settings.animation.duration = 0;
+    }
+
     const NOT_NESTED = ':not(:scope summary + * *)';
     this.#detailsElements = [
       ...this.#rootElement.querySelectorAll<HTMLDetailsElement>(
