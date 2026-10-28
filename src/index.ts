@@ -215,24 +215,13 @@ export class Disclosure {
       return;
     }
 
-    const binding = this.#bindings.get(summary);
-
-    if (!binding) {
-      return;
-    }
-
-    const { details } = binding;
-    this.#toggle(details, !details.hasAttribute('data-disclosure-open'));
+    const details = this.#bindings.get(summary)?.details;
+    details &&
+      this.#toggle(details, !details.hasAttribute('data-disclosure-open'));
   };
 
   #onContentAnimationFinish(content: HTMLElement): void {
-    const binding = this.#bindings.get(content);
-
-    if (!binding) {
-      return;
-    }
-
-    const details = binding.details;
+    const details = this.#bindings.get(content)?.details;
 
     if (!details) {
       return;
