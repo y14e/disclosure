@@ -30,10 +30,7 @@ export class Disclosure {
     }
 
     this.#rootElement = root;
-    this.#settings = resolveOptions(
-      resolveOptions(defaults, Disclosure.defaults),
-      options,
-    );
+    this.#settings = resolveOptions(resolveOptions(defaults, Disclosure.defaults), options);
 
     if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
       this.#settings.animation.duration = 0;
@@ -41,9 +38,7 @@ export class Disclosure {
 
     const NOT_NESTED = ':not(:scope summary + * *)';
     this.#detailsElements = [
-      ...this.#rootElement.querySelectorAll<HTMLDetailsElement>(
-        `details${NOT_NESTED}`,
-      ),
+      ...this.#rootElement.querySelectorAll<HTMLDetailsElement>(`details${NOT_NESTED}`),
     ];
 
     if (!this.#detailsElements.length) {
@@ -52,9 +47,7 @@ export class Disclosure {
     }
 
     this.#summaryElements = [
-      ...this.#rootElement.querySelectorAll<HTMLElement>(
-        `summary${NOT_NESTED}`,
-      ),
+      ...this.#rootElement.querySelectorAll<HTMLElement>(`summary${NOT_NESTED}`),
     ];
 
     if (!this.#summaryElements.length) {
@@ -63,9 +56,7 @@ export class Disclosure {
     }
 
     this.#contentElements = [
-      ...this.#rootElement.querySelectorAll<HTMLElement>(
-        `summary${NOT_NESTED} + *`,
-      ),
+      ...this.#rootElement.querySelectorAll<HTMLElement>(`summary${NOT_NESTED} + *`),
     ];
 
     if (!this.#contentElements.length) {
@@ -96,10 +87,7 @@ export class Disclosure {
       return;
     }
 
-    if (
-      !(details instanceof HTMLDetailsElement) ||
-      !this.#bindings.has(details)
-    ) {
+    if (!(details instanceof HTMLDetailsElement) || !this.#bindings.has(details)) {
       console.warn('Invalid <details> element');
       return;
     }
@@ -151,10 +139,7 @@ export class Disclosure {
       return;
     }
 
-    if (
-      !(details instanceof HTMLDetailsElement) ||
-      !this.#bindings.has(details)
-    ) {
+    if (!(details instanceof HTMLDetailsElement) || !this.#bindings.has(details)) {
       console.warn('Invalid <details> element');
       return;
     }
@@ -163,17 +148,12 @@ export class Disclosure {
   }
 
   #initialize(): void {
-    saveAttributes(this.#summaryElements, [
-      'aria-disabled',
-      'style',
-      'tabindex',
-    ]);
+    saveAttributes(this.#summaryElements, ['aria-disabled', 'style', 'tabindex']);
     this.#eventController = new AbortController();
     const { signal } = this.#eventController;
 
     this.#detailsElements.forEach((details, i) => {
-      details.name &&
-        details.setAttribute('data-disclosure-name', details.name);
+      details.name && details.setAttribute('data-disclosure-name', details.name);
 
       function onMutate(): void {
         details.toggleAttribute('data-disclosure-open', details.open);
@@ -216,8 +196,7 @@ export class Disclosure {
     }
 
     const details = this.#bindings.get(summary)?.details;
-    details &&
-      this.#toggle(details, !details.hasAttribute('data-disclosure-open'));
+    details && this.#toggle(details, !details.hasAttribute('data-disclosure-open'));
   };
 
   #onContentAnimationFinish(content: HTMLElement): void {
@@ -239,11 +218,7 @@ export class Disclosure {
     }
   }
 
-  #toggle(
-    details: HTMLDetailsElement,
-    isExpand: boolean,
-    isProgrammatic = false,
-  ): void {
+  #toggle(details: HTMLDetailsElement, isExpand: boolean, isProgrammatic = false): void {
     if (details.hasAttribute('data-disclosure-open') === isExpand) {
       return;
     }
@@ -252,9 +227,7 @@ export class Disclosure {
       !isExpand &&
       !isProgrammatic &&
       !this.#settings.collapsible &&
-      this.#detailsElements.filter((d) =>
-        d.hasAttribute('data-disclosure-open'),
-      ).length <= 1
+      this.#detailsElements.filter((d) => d.hasAttribute('data-disclosure-open')).length <= 1
     ) {
       return;
     }
@@ -265,8 +238,7 @@ export class Disclosure {
       details.removeAttribute('name');
       const expanded = this.#detailsElements.find(
         (d) =>
-          d.hasAttribute('data-disclosure-open') &&
-          d.getAttribute('data-disclosure-name') === name,
+          d.hasAttribute('data-disclosure-open') && d.getAttribute('data-disclosure-name') === name,
       );
       expanded && this.#toggle(expanded, false, true);
     }
@@ -318,11 +290,7 @@ export class Disclosure {
     );
   }
 
-  #createBinding(
-    details: HTMLDetailsElement,
-    summary: HTMLElement,
-    content: HTMLElement,
-  ): Binding {
+  #createBinding(details: HTMLDetailsElement, summary: HTMLElement, content: HTMLElement): Binding {
     return { animation: null, content, details, summary };
   }
 

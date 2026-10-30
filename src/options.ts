@@ -1,9 +1,6 @@
 import type { DisclosureOptions as Options } from './types';
 
-export function resolveOptions(
-  defaults: Options,
-  source: Partial<Options>,
-): Options {
+export function resolveOptions(defaults: Options, source: Partial<Options>): Options {
   const merged = {
     ...defaults,
     ...source,
