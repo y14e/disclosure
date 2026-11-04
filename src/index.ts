@@ -122,7 +122,7 @@ export class Disclosure {
     this.#animationController = null;
 
     for (const details of this.#detailsElements) {
-      for (const name of ['name', 'open']) {
+      for (const name of ['name', 'open'] as const) {
         details.removeAttribute(`data-disclosure-${name}`);
       }
     }
