@@ -87,7 +87,7 @@ export class Disclosure {
       return;
     }
 
-    if (!(details instanceof HTMLDetailsElement) || !this.#bindings.has(details)) {
+    if (!this.#isValidDetails(details)) {
       console.warn('Invalid <details> element');
       return;
     }
@@ -139,7 +139,7 @@ export class Disclosure {
       return;
     }
 
-    if (!(details instanceof HTMLDetailsElement) || !this.#bindings.has(details)) {
+    if (!this.#isValidDetails(details)) {
       console.warn('Invalid <details> element');
       return;
     }
@@ -296,6 +296,10 @@ export class Disclosure {
 
   #isFocusable(element: HTMLElement): boolean {
     return element.tabIndex >= 0;
+  }
+
+  #isValidDetails(details: HTMLDetailsElement): boolean {
+    return details instanceof HTMLDetailsElement && this.#bindings.has(details);
   }
 
   async #waitAnimationsFinish(): Promise<void> {
