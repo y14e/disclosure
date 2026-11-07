@@ -60,10 +60,10 @@ new Disclosure(root);
 
 ## 📦 APIs
 
-### `collapse`
+### `close`
 
 ```ts
-disclosure.collapse(details);
+disclosure.close(details);
 // => void
 //
 // details: HTMLDetailsElement
@@ -80,10 +80,10 @@ disclosure.destroy(force);
 // force (optional): If true, skips waiting for animations to finish.
 ```
 
-### `expand`
+### `open`
 
 ```ts
-disclosure.expand(details);
+disclosure.open(details);
 // => void
 //
 // details: HTMLDetailsElement

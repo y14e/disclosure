@@ -82,7 +82,7 @@ export class Disclosure {
     this.#initialize();
   }
 
-  collapse(details: HTMLDetailsElement): void {
+  close(details: HTMLDetailsElement): void {
     if (this.#isDestroyed) {
       return;
     }
@@ -134,7 +134,7 @@ export class Disclosure {
     this.#rootElement.removeAttribute('data-disclosure-initialized');
   }
 
-  expand(details: HTMLDetailsElement): void {
+  open(details: HTMLDetailsElement): void {
     if (this.#isDestroyed) {
       return;
     }
@@ -218,13 +218,13 @@ export class Disclosure {
     }
   }
 
-  #toggle(details: HTMLDetailsElement, isExpand: boolean, isProgrammatic = false): void {
-    if (details.hasAttribute('data-disclosure-open') === isExpand) {
+  #toggle(details: HTMLDetailsElement, isOpen: boolean, isProgrammatic = false): void {
+    if (details.hasAttribute('data-disclosure-open') === isOpen) {
       return;
     }
 
     if (
-      !isExpand &&
+      !isOpen &&
       !isProgrammatic &&
       !this.#settings.collapsible &&
       this.#detailsElements.filter((d) => d.hasAttribute('data-disclosure-open')).length <= 1
@@ -234,13 +234,13 @@ export class Disclosure {
 
     const name = details.getAttribute('data-disclosure-name');
 
-    if (name && isExpand) {
+    if (name && isOpen) {
       details.removeAttribute('name');
-      const expanded = this.#detailsElements.find(
+      const opened = this.#detailsElements.find(
         (d) =>
           d.hasAttribute('data-disclosure-open') && d.getAttribute('data-disclosure-name') === name,
       );
-      expanded && this.#toggle(expanded, false, true);
+      opened && this.#toggle(opened, false, true);
     }
 
     const binding = this.#bindings.get(details);
@@ -253,13 +253,13 @@ export class Disclosure {
     const startSize = details.open ? content.offsetHeight : 0;
     binding.animation?.cancel();
 
-    if (isExpand) {
+    if (isOpen) {
       details.open = true;
     }
 
-    const endSize = isExpand ? content.scrollHeight : 0;
+    const endSize = isOpen ? content.scrollHeight : 0;
     binding.animation?.cancel();
-    details.toggleAttribute('data-disclosure-open', isExpand);
+    details.toggleAttribute('data-disclosure-open', isOpen);
     content.style.setProperty('overflow', 'clip');
     const { duration, easing } = this.#settings.animation;
     const animation = content.animate(
