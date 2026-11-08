@@ -317,9 +317,7 @@ export class Disclosure {
 function waitAnimationFinish(animation: Animation): Promise<void> {
   return ['finished', 'idle'].includes(animation.playState)
     ? Promise.resolve()
-    : new Promise((resolve) =>
-        animation.addEventListener('finish', () => resolve(), { once: true }),
-      );
+    : new Promise((r) => animation.addEventListener('finish', () => r(), { once: true }));
 }
 
 export type { Options as DisclosureOptions };
