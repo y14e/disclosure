@@ -7,7 +7,7 @@ import type { Binding, DisclosureOptions as Options } from './types';
 export class Disclosure {
   static defaults: Partial<Options> = {};
 
-  #rootElement!: HTMLElement;
+  #element!: HTMLElement;
   #settings!: Options;
   #detailsElements!: HTMLDetailsElement[];
   #summaryElements!: HTMLElement[];
@@ -19,17 +19,17 @@ export class Disclosure {
   #cleanupRovingTabIndex: (() => void) | null = null;
   #isDestroyed = false;
 
-  constructor(root: HTMLElement, options: Partial<Options> = {}) {
-    if (!(root instanceof HTMLElement)) {
-      throw new TypeError('Invalid root element');
+  constructor(element: HTMLElement, options: Partial<Options> = {}) {
+    if (!(element instanceof HTMLElement)) {
+      throw new TypeError('Invalid element');
     }
 
-    if (root.hasAttribute('data-disclosure-initialized')) {
+    if (element.hasAttribute('data-disclosure-initialized')) {
       console.warn('Already initialized');
       return;
     }
 
-    this.#rootElement = root;
+    this.#element = element;
     this.#settings = resolveOptions(resolveOptions(defaults, Disclosure.defaults), options);
 
     if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
@@ -38,7 +38,7 @@ export class Disclosure {
 
     const NOT_NESTED = ':not(:scope summary + * *)';
     this.#detailsElements = [
-      ...this.#rootElement.querySelectorAll<HTMLDetailsElement>(`details${NOT_NESTED}`),
+      ...this.#element.querySelectorAll<HTMLDetailsElement>(`details${NOT_NESTED}`),
     ];
 
     if (!this.#detailsElements.length) {
@@ -47,7 +47,7 @@ export class Disclosure {
     }
 
     this.#summaryElements = [
-      ...this.#rootElement.querySelectorAll<HTMLElement>(`summary${NOT_NESTED}`),
+      ...this.#element.querySelectorAll<HTMLElement>(`summary${NOT_NESTED}`),
     ];
 
     if (!this.#summaryElements.length) {
@@ -56,7 +56,7 @@ export class Disclosure {
     }
 
     this.#contentElements = [
-      ...this.#rootElement.querySelectorAll<HTMLElement>(`summary${NOT_NESTED} + *`),
+      ...this.#element.querySelectorAll<HTMLElement>(`summary${NOT_NESTED} + *`),
     ];
 
     if (!this.#contentElements.length) {
@@ -131,7 +131,7 @@ export class Disclosure {
     restoreAttributes(this.#summaryElements);
     this.#summaryElements.length = 0;
     this.#contentElements.length = 0;
-    this.#rootElement.removeAttribute('data-disclosure-initialized');
+    this.#element.removeAttribute('data-disclosure-initialized');
   }
 
   open(details: HTMLDetailsElement): void {
@@ -178,13 +178,13 @@ export class Disclosure {
       summary.addEventListener('click', this.#onSummaryClick, { signal });
     });
 
-    this.#cleanupRovingTabIndex = createRovingTabIndex(this.#rootElement, {
+    this.#cleanupRovingTabIndex = createRovingTabIndex(this.#element, {
       direction: 'vertical',
       navigationOnly: true,
       selector: 'summary:not(:scope summary + * *)',
       wrap: true,
     });
-    this.#rootElement.setAttribute('data-disclosure-initialized', '');
+    this.#element.setAttribute('data-disclosure-initialized', '');
   }
 
   #onSummaryClick = (event: MouseEvent): void => {

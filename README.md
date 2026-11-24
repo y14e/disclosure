@@ -23,10 +23,10 @@ import { Disclosure } from 'https://esm.unpkg.com/@y14e/disclosure@<x.x.x>';
 ## Usage
 
 ```ts
-new Disclosure(root, options);
+new Disclosure(element, options);
 // => Disclosure
 //
-// root: HTMLElement
+// element: HTMLElement
 // options (optional): DisclosureOptions
 ```
 
